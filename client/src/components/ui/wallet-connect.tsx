@@ -10,10 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Wallet, X, AlertTriangle } from 'lucide-react';
-import { SiEthereum } from 'react-icons/si';
-import { RiWallet3Line } from 'react-icons/ri';
-import { BiCoinStack } from 'react-icons/bi';
+import { Wallet, AlertTriangle } from 'lucide-react';
 
 export const WalletConnectButton: React.FC = () => {
   const { account, connectWallet, disconnectWallet, isConnecting, chainId } = useWallet();
@@ -90,7 +87,9 @@ export const WalletConnectButton: React.FC = () => {
               className="w-full flex items-center justify-between p-4 bg-muted rounded-xl border border-border hover:bg-muted/80 transition-colors"
             >
               <div className="flex items-center">
-                <SiEthereum className="h-8 w-8 text-[#F6851B]" />
+                <div className="h-8 w-8 rounded-full bg-[#F6851B] flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-white" />
+                </div>
                 <span className="ml-3 font-medium">MetaMask</span>
               </div>
               <span className="text-primary text-sm">Popular</span>
@@ -101,7 +100,9 @@ export const WalletConnectButton: React.FC = () => {
               className="w-full flex items-center justify-between p-4 bg-muted rounded-xl border border-border hover:bg-muted/80 transition-colors"
             >
               <div className="flex items-center">
-                <RiWallet3Line className="h-8 w-8 text-[#3B99FC]" />
+                <div className="h-8 w-8 rounded-full bg-[#3B99FC] flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-white" />
+                </div>
                 <span className="ml-3 font-medium">WalletConnect</span>
               </div>
               <span className="text-muted-foreground text-sm">Universal</span>
@@ -112,7 +113,9 @@ export const WalletConnectButton: React.FC = () => {
               className="w-full flex items-center justify-between p-4 bg-muted rounded-xl border border-border hover:bg-muted/80 transition-colors"
             >
               <div className="flex items-center">
-                <BiCoinStack className="h-8 w-8 text-[#0052FF]" />
+                <div className="h-8 w-8 rounded-full bg-[#0052FF] flex items-center justify-center">
+                  <Wallet className="h-5 w-5 text-white" />
+                </div>
                 <span className="ml-3 font-medium">Coinbase Wallet</span>
               </div>
               <span className="text-muted-foreground text-sm">Mobile</span>
