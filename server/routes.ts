@@ -1,9 +1,12 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertWaitlistSchema, insertCampaignSchema, insertDonationSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { predictCampaignSuccess } from "./ml/successPredictionModel";
+import { extractFraudFeatures, predictFraudProbability, detectSuspiciousContent } from "./ml/fraudDetectionModel";
+import { preprocessCampaignData } from "./ml/dataProcessing";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API routes
@@ -124,6 +127,186 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to add to waitlist' });
     }
   });
+
+  // AI/ML Endpoints
+  
+  // Campaign Success Prediction
+  app.post('/api/campaigns/predict-success', async (req: Request, res: Response) => {
+    try {
+      const { 
+        title, 
+        description, 
+        goalAmount, 
+        category, 
+        mediaUrls, 
+        durationInDays 
+      } = req.body;
+      
+      if (!title || !description || !goalAmount || !durationInDays) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+      
+      // Get user info (in a real app, this would come from auth)
+      // For demo, we'll use a default value or user ID if provided
+      const creatorId = req.body.creatorId || 1;
+      const creator = await storage.getUser(creatorId);
+      
+      // Get creator's previous campaigns
+      const creatorCampaigns = await storage.getCampaignsByCreator(creatorId);
+      const successfulCampaigns = creatorCampaigns.filter(
+        c => parseFloat(c.raisedAmount) >= parseFloat(c.goalAmount)
+      ).length;
+      
+      // Calculate creator history score
+      const creatorHistoryScore = creatorCampaigns.length > 0 
+        ? successfulCampaigns / creatorCampaigns.length * 10 
+        : 5; // Default score for new creators
+      
+      // Check if campaign has video
+      const hasVideo = mediaUrls 
+        ? mediaUrls.some((url: string) => 
+            url.includes('youtube.com') || 
+            url.includes('vimeo.com') || 
+            url.endsWith('.mp4')
+          )
+        : false;
+      
+      // Count images
+      const imageCount = mediaUrls 
+        ? mediaUrls.filter((url: string) => 
+            url.endsWith('.jpg') || 
+            url.endsWith('.jpeg') || 
+            url.endsWith('.png') || 
+            url.endsWith('.gif')
+          ).length
+        : 0;
+      
+      // Create a mock campaign object for preprocessing
+      const campaignData = {
+        id: 0,
+        title,
+        description,
+        goalAmount,
+        category,
+        creatorHistoryScore,
+        hasVideo,
+        imageCount,
+        duration: durationInDays,
+        wasSuccessful: false  // Doesn't matter for prediction
+      };
+      
+      // Preprocess the single campaign
+      const processed = preprocessCampaignData([campaignData])[0];
+      
+      // Get prediction
+      const prediction = await predictCampaignSuccess(processed.features);
+      
+      if (!prediction) {
+        return res.status(500).json({ error: "Prediction model unavailable" });
+      }
+      
+      // Generate suggestions based on the campaign data
+      const suggestions = [];
+      
+      if (description.length < 1000) {
+        suggestions.push("Add more details to your campaign description");
+      }
+      
+      if (!hasVideo) {
+        suggestions.push("Add a video to increase your chances of success");
+      }
+      
+      if (imageCount < 3) {
+        suggestions.push("Add more images to showcase your campaign");
+      }
+      
+      if (parseFloat(goalAmount) > 50000 && prediction.successProbability < 0.4) {
+        suggestions.push("Consider lowering your funding goal for a higher chance of success");
+      }
+      
+      if (durationInDays < 20) {
+        suggestions.push("Consider a longer campaign duration to reach more potential donors");
+      } else if (durationInDays > 60) {
+        suggestions.push("Very long campaigns can lose momentum. Consider a shorter duration for better results");
+      }
+      
+      // Return prediction results
+      res.json({
+        successProbability: Math.round(prediction.successProbability * 100),
+        isLikelySuccessful: prediction.isLikelySuccessful,
+        confidenceLevel: prediction.confidenceLevel,
+        suggestions
+      });
+    } catch (error) {
+      console.error("Error predicting campaign success:", error);
+      res.status(500).json({ error: "Failed to predict campaign success" });
+    }
+  });
+
+  // Fraud Risk Detection
+  app.post('/api/campaigns/fraud-check', async (req: Request, res: Response) => {
+    try {
+      const { campaignId, description, goalAmount } = req.body;
+      
+      if (!description || !goalAmount) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+      
+      // Extract fraud features
+      const fraudFeatures = await extractFraudFeatures(
+        campaignId || 0,  // Use 0 for new campaigns
+        description,
+        goalAmount
+      );
+      
+      // Check for suspicious content
+      const suspiciousContent = detectSuspiciousContent(description);
+      
+      // Get fraud prediction
+      const fraudPrediction = await predictFraudProbability(fraudFeatures);
+      
+      // Return detailed risk assessment
+      res.json({
+        riskScore: Math.round(fraudPrediction.fraudProbability * 100),
+        riskLevel: fraudPrediction.riskLevel,
+        flaggedPhrases: suspiciousContent.flaggedPhrases,
+        recommendations: generateFraudPreventionRecommendations(
+          fraudFeatures, 
+          fraudPrediction.riskLevel
+        )
+      });
+    } catch (error) {
+      console.error("Error checking fraud risk:", error);
+      res.status(500).json({ error: "Failed to check fraud risk" });
+    }
+  });
+
+  // Helper function to generate fraud prevention recommendations
+  function generateFraudPreventionRecommendations(features, riskLevel) {
+    const recommendations = [];
+    
+    if (features.suspiciousWords > 0) {
+      recommendations.push("Review your campaign description for promotional language that might trigger fraud warnings");
+    }
+    
+    if (features.mediaCount < 2) {
+      recommendations.push("Add more media content to establish legitimacy");
+    }
+    
+    if (features.externalLinksCount > 5) {
+      recommendations.push("Reduce the number of external links to lower suspicious activity flags");
+    }
+    
+    if (features.creatorAccountAge < 30 && parseFloat(features.goalAmount) > 10000) {
+      recommendations.push("New accounts with large funding goals face higher scrutiny. Consider building platform reputation first");
+    }
+    
+    if (riskLevel === 'high') {
+      recommendations.push("Consider completing identity verification to reduce risk score");
+    }
+    
+    return recommendations;
+  }
 
   // Create HTTP server
   const httpServer = createServer(app);
