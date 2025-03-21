@@ -1,0 +1,124 @@
+npm ERR! code 1
+npm ERR! path C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@tensorflow\tfjs-node
+npm ERR! command failed
+npm ERR! command C:\WINDOWS\system32\cmd.exe /d /s /c node scripts/install.js
+npm ERR! CPU-windows-4.22.0.zip
+npm ERR! https://storage.googleapis.com/tensorflow/libtensorflow/libtensorflow-cpu-windows-x86_64-2.9.1.zip
+npm ERR! node-pre-gyp install failed with error: Error: Command failed: node-pre-gyp install --fallback-to-build
+npm ERR! node-pre-gyp info it worked if it ends with ok
+npm ERR! node-pre-gyp info using node-pre-gyp@1.0.9
+npm ERR! node-pre-gyp info using node@22.6.0 | win32 | x64
+npm ERR! (node:15620) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+npm ERR! (Use `node --trace-deprecation ...` to show where the warning was created)
+npm ERR! node-pre-gyp info check checked for "C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@tensorflow\tfjs-node\lib\napi-v8\tfjs_binding.node" (not found)
+npm ERR! node-pre-gyp http GET https://storage.googleapis.com/tf-builds/pre-built-binary/napi-v8/4.22.0/CPU-windows-4.22.0.zip
+npm ERR! node-pre-gyp ERR! install response status 404 Not Found on https://storage.googleapis.com/tf-builds/pre-built-binary/napi-v8/4.22.0/CPU-windows-4.22.0.zip
+npm ERR! node-pre-gyp WARN Pre-built binaries not installable for @tensorflow/tfjs-node@4.22.0 and node@22.6.0 (node-v127 ABI, unknown) (falling back to source compile with node-gyp)
+npm ERR! node-pre-gyp WARN Hit error response status 404 Not Found on https://storage.googleapis.com/tf-builds/pre-built-binary/napi-v8/4.22.0/CPU-windows-4.22.0.zip
+npm ERR! gyp info it worked if it ends with ok
+npm ERR! gyp info using node-gyp@9.4.0
+npm ERR! gyp info using node@22.6.0 | win32 | x64
+npm ERR! gyp info ok
+npm ERR! gyp info it worked if it ends with ok
+npm ERR! gyp info using node-gyp@9.4.0
+npm ERR! gyp info using node@22.6.0 | win32 | x64
+npm ERR! (node:19440) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+npm ERR! (Use `node --trace-deprecation ...` to show where the warning was created)
+npm ERR! gyp ERR! find Python
+npm ERR! gyp ERR! find Python Python is not set from command line or npm configuration
+npm ERR! gyp ERR! find Python Python is not set from environment variable PYTHON
+npm ERR! gyp ERR! find Python checking if "python3" can be used
+npm ERR! gyp ERR! find Python - "python3" is not in PATH or produced an error
+npm ERR! gyp ERR! find Python checking if "python" can be used
+npm ERR! gyp ERR! find Python - "python" is not in PATH or produced an error
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python39\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python39\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python39\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python39\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python39-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python39-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python39-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python39-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python39-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files (x86)\Python39-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python38\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python38\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python38\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python38\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python38-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python38-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python38-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python38-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python38-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files (x86)\Python38-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python37\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python37\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python37\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python37\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python37-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python37-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python37-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python37-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python37-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files (x86)\Python37-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python36\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python36\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python36\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python36\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Users\shoua\AppData\Local\Programs\Python\Python36-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Users\shoua\AppData\Local\Programs\Python\Python36-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files\Python36-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files\Python36-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if Python is C:\Program Files (x86)\Python36-32\python.exe
+npm ERR! gyp ERR! find Python - "C:\Program Files (x86)\Python36-32\python.exe" could not be run
+npm ERR! gyp ERR! find Python checking if the py launcher can be used to find Python 3
+npm ERR! gyp ERR! find Python - "py.exe" is not in PATH or produced an error
+npm ERR! gyp ERR! find Python
+npm ERR! gyp ERR! find Python **********************************************************
+npm ERR! gyp ERR! find Python You need to install the latest version of Python.
+npm ERR! gyp ERR! find Python Node-gyp should be able to find and use Python. If not,
+npm ERR! gyp ERR! find Python you can try one of the following options:
+npm ERR! gyp ERR! find Python - Use the switch --python="C:\Path\To\python.exe"
+npm ERR! gyp ERR! find Python   (accepted by both node-gyp and npm)
+npm ERR! gyp ERR! find Python - Set the environment variable PYTHON
+npm ERR! gyp ERR! find Python - Set the npm configuration variable python:
+npm ERR! gyp ERR! find Python   npm config set python "C:\Path\To\python.exe"
+npm ERR! gyp ERR! find Python For more information consult the documentation at:
+npm ERR! gyp ERR! find Python https://github.com/nodejs/node-gyp#installation
+npm ERR! gyp ERR! find Python **********************************************************
+npm ERR! gyp ERR! find Python
+npm ERR! gyp ERR! configure error
+npm ERR! gyp ERR! stack Error: Could not find any Python installation to use
+npm ERR! gyp ERR! stack     at PythonFinder.fail (C:\Users\shoua\AppData\Roaming\npm\node_modules\npm\node_modules\node-gyp\lib\find-python.js:330:47)   
+npm ERR! gyp ERR! stack     at PythonFinder.runChecks (C:\Users\shoua\AppData\Roaming\npm\node_modules\npm\node_modules\node-gyp\lib\find-python.js:159:21)
+npm ERR! gyp ERR! stack     at PythonFinder.<anonymous> (C:\Users\shoua\AppData\Roaming\npm\node_modules\npm\node_modules\node-gyp\lib\find-python.js:228:18)
+npm ERR! gyp ERR! stack     at PythonFinder.execFileCallback (C:\Users\shoua\AppData\Roaming\npm\node_modules\npm\node_modules\node-gyp\lib\find-python.js:294:16)
+npm ERR! gyp ERR! stack     at exithandler (node:child_process:429:5)
+npm ERR! gyp ERR! stack     at ChildProcess.errorhandler (node:child_process:441:5)
+npm ERR! gyp ERR! stack     at ChildProcess.emit (node:events:520:28)
+npm ERR! gyp ERR! stack     at ChildProcess._handle.onexit (node:internal/child_process:292:12)
+npm ERR! gyp ERR! stack     at onErrorNT (node:internal/child_process:484:16)
+npm ERR! gyp ERR! stack     at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+npm ERR! gyp ERR! System Windows_NT 10.0.26100
+npm ERR! gyp ERR! command "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\shoua\\AppData\\Roaming\\npm\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js" "configure" "--fallback-to-build" "--module=C:\\Users\\shoua\\OneDrive\\Desktop\\aimodel\\ProductWaitlist\\node_modules\\@tensorflow\\tfjs-node\\lib\\napi-v8\\tfjs_binding.node" "--module_name=tfjs_binding" "--module_path=C:\\Users\\shoua\\OneDrive\\Desktop\\aimodel\\ProductWaitlist\\node_modules\\@tensorflow\\tfjs-node\\lib\\napi-v8" "--napi_version=9" "--node_abi_napi=napi" "--napi_build_version=8" "--node_napi_label=napi-v8"
+npm ERR! gyp ERR! cwd C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@tensorflow\tfjs-node
+npm ERR! gyp ERR! node -v v22.6.0
+npm ERR! gyp ERR! node-gyp -v v9.4.0
+npm ERR! gyp ERR! not ok
+npm ERR! node-pre-gyp ERR! build error
+npm ERR! node-pre-gyp ERR! stack Error: Failed to execute 'C:\Program Files\nodejs\node.exe C:\Users\shoua\AppData\Roaming\npm\node_modules\npm\node_modules\node-gyp\bin\node-gyp.js configure --fallback-to-build --module=C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@tensorflow\tfjs-node\lib\napi-v8\tfjs_binding.node --module_name=tfjs_binding --module_path=C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@tensorflow\tfjs-node\lib\napi-v8 --napi_version=9 --node_abi_napi=napi --napi_build_version=8 --node_napi_label=napi-v8' (1)
+npm ERR! node-pre-gyp ERR! stack     at ChildProcess.<anonymous> (C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@mapbox\node-pre-gyp\lib\util\compile.js:89:23)
+npm ERR! node-pre-gyp ERR! stack     at ChildProcess.emit (node:events:520:28)
+npm ERR! node-pre-gyp ERR! stack     at maybeClose (node:internal/child_process:1105:16)
+npm ERR! node-pre-gyp ERR! stack     at ChildProcess._handle.onexit (node:internal/child_process:305:5)
+npm ERR! node-pre-gyp ERR! System Windows_NT 10.0.26100
+npm ERR! node-pre-gyp ERR! command "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\shoua\\OneDrive\\Desktop\\aimodel\\ProductWaitlist\\node_modules\\@mapbox\\node-pre-gyp\\bin\\node-pre-gyp" "install" "--fallback-to-build"
+npm ERR! node-pre-gyp ERR! cwd C:\Users\shoua\OneDrive\Desktop\aimodel\ProductWaitlist\node_modules\@tensorflow\tfjs-node
+npm ERR! node-pre-gyp ERR! node -v v22.6.0
+npm ERR! node-pre-gyp ERR! node-pre-gyp -v v1.0.9
+npm ERR! node-pre-gyp ERR! not ok
+npm ERR! * Downloading libtensorflow
+npm ERR!
+npm ERR! * Building TensorFlow Node.js bindings
+
+npm ERR! A complete log of this run can be found in: C:\Users\shoua\AppData\Local\npm-cache\_logs\2025-03-20T00_03_09_638Z-debug-0.log
