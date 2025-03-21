@@ -4,6 +4,7 @@ import { Campaign } from '@shared/schema';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useWallet } from '@/contexts/WalletContext';
 import { useToast } from '@/hooks/use-toast';
+import ModelTraining from '@/components/admin/ModelTraining';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -177,6 +178,7 @@ const Admin: React.FC = () => {
           <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
           <TabsTrigger value="settings">Platform Settings</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="ml-training">AI Models</TabsTrigger>
         </TabsList>
         
         <TabsContent value="campaigns" className="pt-6">
@@ -491,6 +493,10 @@ const Admin: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="ml-training" className="pt-6">
+          <ModelTraining />
         </TabsContent>
       </Tabs>
     </div>
