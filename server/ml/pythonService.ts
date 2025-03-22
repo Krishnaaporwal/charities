@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 // Choose URL based on environment
-// Use 127.0.0.1 instead of localhost to avoid potential DNS issues
-const PYTHON_ML_SERVICE_URL = 'http://127.0.0.1:5001';
+// When running locally, use 127.0.0.1
+// When in Replit, we need to use the REPLIT_PYTHONML_URL if available
+const PYTHON_ML_SERVICE_URL = process.env.REPLIT_PYTHONML_URL || 'http://127.0.0.1:5001';
 
 export async function predictCampaignSuccess(campaignData: any) {
   try {
