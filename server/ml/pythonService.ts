@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const PYTHON_ML_SERVICE_URL = 'http://localhost:5001';
+// Choose URL based on environment
+// Use 127.0.0.1 instead of localhost to avoid potential DNS issues
+const PYTHON_ML_SERVICE_URL = 'http://127.0.0.1:5001';
 
 export async function predictCampaignSuccess(campaignData: any) {
   try {
