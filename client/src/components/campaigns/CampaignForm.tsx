@@ -123,10 +123,26 @@ const CampaignForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
-    campaignMutation.mutate(data);
+    try {
+      setIsSubmitting(true);
+      
+      await campaignMutation.mutateAsync(data); // Await properly
+      
+      toast.success("Campaign created successfully!");
+      router.push("/"); // or wherever you want to redirect
+    } catch (error) {
+      console.error("Campaign creation failed:", error);
+      toast({
+        variant: "destructive",
+        title: "Failed to create campaign.",
+        description: "Please try again.",
+      });
+    }
+    finally {
+      setIsSubmitting(false);
+    }
   };
-
+  
   if (!account) {
     return (
       <Card>

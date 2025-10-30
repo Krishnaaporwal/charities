@@ -33,7 +33,7 @@ const HeroSection: React.FC = () => {
               <span className="block mt-2 bg-clip-text text-transparent crypto-gradient">With Transparency</span>
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0">
-              CryptoFund is a decentralized platform where anyone can create, fund, and manage campaigns using cryptocurrencies like ETH or MATIC.
+              NustarFund is a decentralized platform where anyone can create, fund, and manage Charities using cryptocurrencies like ETH or MATIC.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
               <Button 

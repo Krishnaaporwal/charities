@@ -70,8 +70,8 @@ export class MemStorage implements IStorage {
   private addSampleCampaigns() {
     const sampleCampaigns: InsertCampaign[] = [
       {
-        title: "Decentralized Solar Grid",
-        description: "Building solar microgrids with blockchain-based energy trading for rural communities.",
+        title: "Rural Education " ,
+        description: "Building School and Camp for rural communities.",
         imageUrl: "https://images.unsplash.com/photo-1511376979163-f804dff7ad7b",
         category: "ENERGY",
         goalAmount: "20",

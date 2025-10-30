@@ -9,9 +9,9 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-lg crypto-gradient flex items-center justify-center">
-                <span className="font-mono font-bold text-white">CF</span>
+                <span className="font-mono font-bold text-white">NF</span>
               </div>
-              <span className="ml-3 font-mono font-bold text-xl text-white">CryptoFund</span>
+              <span className="ml-3 font-mono font-bold text-xl text-white">NustarFund</span>
             </div>
             <p className="mt-4 text-muted-foreground max-w-md">
               A decentralized crowdfunding platform powered by blockchain technology. Transparent, secure, and global.

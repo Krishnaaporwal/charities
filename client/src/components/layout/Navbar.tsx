@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'wouter';
 import { WalletConnectButton } from '@/components/ui/wallet-connect';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, MessageSquareText } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -19,9 +19,9 @@ const Navbar: React.FC = () => {
             <Link href="/">
               <a className="flex-shrink-0 flex items-center">
                 <div className="w-10 h-10 rounded-lg crypto-gradient flex items-center justify-center">
-                  <span className="font-mono font-bold text-white">CF</span>
+                  <span className="font-mono font-bold text-white">NF</span>
                 </div>
-                <span className="ml-3 font-mono font-bold text-xl text-white">CryptoFund</span>
+                <span className="ml-3 font-mono font-bold text-xl text-white">NustarFund</span>
               </a>
             </Link>
             <div className="hidden md:ml-6 md:flex md:space-x-6">
@@ -35,9 +35,16 @@ const Navbar: React.FC = () => {
                   How It Works
                 </a>
               </Link>
-              <Link href="/#faq">
+              <Link href="/tax-info">
                 <a className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium">
-                  FAQ
+                  Tax & Donations
+                </a>
+              </Link>
+              {/* Chat Link */}
+              <Link href="/CreativeDataSync">
+                <a className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium flex items-center gap-1">
+                  <MessageSquareText className="h-4 w-4" />
+                  Chat
                 </a>
               </Link>
             </div>
@@ -79,6 +86,13 @@ const Navbar: React.FC = () => {
           <Link href="/#faq">
             <a className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted">
               FAQ
+            </a>
+          </Link>
+          {/* Chat Link in Mobile */}
+          <Link href="/CreativeDataSync">
+            <a className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted">
+              <MessageSquareText className="inline h-4 w-4 mr-2" />
+              Chat
             </a>
           </Link>
           <div className="mt-4 px-3">

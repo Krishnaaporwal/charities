@@ -15,7 +15,7 @@ const FeaturedCampaigns: React.FC = () => {
     <section className="py-16 bg-muted/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-3xl font-bold">Featured Campaigns</h2>
+          <h2 className="text-3xl font-bold">Featured Charities</h2>
           <Link href="/explore">
             <a className="text-primary hover:text-primary/80 flex items-center">
               View all
