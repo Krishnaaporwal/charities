@@ -25,12 +25,16 @@ export function isWalletConnected(): boolean {
   return localStorage.getItem('walletConnected') === 'true';
 }
 
+// Platform fee configuration
+export const PLATFORM_FEE_ETH = "0.01"; // Platform fee in ETH (0.01 ETH)
+export const SEPOLIA_CHAIN_ID = 11155111;
+
 // Helper function to get supported networks
 export function getSupportedNetworks() {
   return [
+    { id: 11155111, name: 'Sepolia Testnet' }, // Primary network for testing
     { id: 1, name: 'Ethereum Mainnet' },
     { id: 5, name: 'Goerli Testnet' },
-    { id: 11155111, name: 'Sepolia Testnet' },
     { id: 137, name: 'Polygon Mainnet' },
     { id: 80001, name: 'Mumbai Testnet' },
   ];

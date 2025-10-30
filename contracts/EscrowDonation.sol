@@ -9,24 +9,44 @@ contract EscrowDonation {
     bool public goalReached;
     bool public isClosed;
     
+    // Platform fee: 0.01 ETH (10000000000000000 wei)
+    uint256 public constant PLATFORM_FEE = 0.01 ether;
+    
     mapping(address => uint256) public donations;
 
     event DonationReceived(address indexed donor, uint256 amount);
     event GoalReached(uint256 totalAmount);
     event FundsWithdrawn(address indexed campaignOwner, uint256 amount);
     event RefundIssued(address indexed donor, uint256 amount);
+    event PlatformFeePaid(address indexed payer, uint256 amount);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Not authorized");
         _;
     }
 
-    constructor(address payable _campaignOwner, uint256 _fundingGoal) {
+    constructor(address payable _campaignOwner, uint256 _fundingGoal) payable {
+        require(msg.value >= PLATFORM_FEE, "Platform fee required");
+        
         owner = msg.sender;
         campaignOwner = _campaignOwner;
         fundingGoal = _fundingGoal;
         goalReached = false;
         isClosed = false;
+        
+        // Transfer platform fee to contract owner
+        payable(owner).transfer(PLATFORM_FEE);
+        emit PlatformFeePaid(msg.sender, PLATFORM_FEE);
+        
+        // Refund any excess sent
+        if (msg.value > PLATFORM_FEE) {
+            payable(msg.sender).transfer(msg.value - PLATFORM_FEE);
+        }
+    }
+    
+    // Function to get platform fee
+    function getPlatformFee() public pure returns (uint256) {
+        return PLATFORM_FEE;
     }
 
     function donate() public payable {

@@ -33,6 +33,10 @@ export const campaigns = pgTable("campaigns", {
   walletAddress: text("wallet_address").notNull(),
   deadline: timestamp("deadline").notNull(),
   isActive: boolean("is_active").default(true),
+  creatorType: text("creator_type").notNull().default("individual"), // 'individual' or 'ngo'
+  ngoName: text("ngo_name"),
+  ngoRegistrationNumber: text("ngo_registration_number"),
+  ngoDescription: text("ngo_description"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -45,6 +49,17 @@ export const insertCampaignSchema = createInsertSchema(campaigns).pick({
   creatorId: true,
   walletAddress: true,
   deadline: true,
+  creatorType: true,
+  ngoName: true,
+  ngoRegistrationNumber: true,
+  ngoDescription: true,
+}).extend({
+  deadline: z.union([z.string(), z.date()]).transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  })
 });
 
 // Donation schema
@@ -77,6 +92,51 @@ export const insertWaitlistSchema = createInsertSchema(waitlist).pick({
   email: true,
 });
 
+// NGO Reports schema
+export const ngoReports = pgTable("ngo_reports", {
+  id: serial("id").primaryKey(),
+  campaignId: integer("campaign_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  reportData: jsonb("report_data"), // Store structured data like beneficiaries, funds spent, etc.
+  images: jsonb("images"), // Array of image URLs
+  documents: jsonb("documents"), // Array of document URLs
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertNgoReportSchema = createInsertSchema(ngoReports).pick({
+  campaignId: true,
+  title: true,
+  description: true,
+  reportData: true,
+  images: true,
+  documents: true,
+});
+
+// NGO Milestones schema
+export const ngoMilestones = pgTable("ngo_milestones", {
+  id: serial("id").primaryKey(),
+  campaignId: integer("campaign_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  targetDate: timestamp("target_date"),
+  completedDate: timestamp("completed_date"),
+  status: text("status").notNull().default("pending"), // 'pending', 'in-progress', 'completed'
+  impactMetrics: jsonb("impact_metrics"), // Store metrics like people helped, items distributed, etc.
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertNgoMilestoneSchema = createInsertSchema(ngoMilestones).pick({
+  campaignId: true,
+  title: true,
+  description: true,
+  targetDate: true,
+  completedDate: true,
+  status: true,
+  impactMetrics: true,
+});
+
 // Define types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -89,3 +149,9 @@ export type InsertDonation = z.infer<typeof insertDonationSchema>;
 
 export type Waitlist = typeof waitlist.$inferSelect;
 export type InsertWaitlist = z.infer<typeof insertWaitlistSchema>;
+
+export type NgoReport = typeof ngoReports.$inferSelect;
+export type InsertNgoReport = z.infer<typeof insertNgoReportSchema>;
+
+export type NgoMilestone = typeof ngoMilestones.$inferSelect;
+export type InsertNgoMilestone = z.infer<typeof insertNgoMilestoneSchema>;

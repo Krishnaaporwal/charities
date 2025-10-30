@@ -91,17 +91,75 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       const browserProvider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await browserProvider.send("eth_requestAccounts", []);
       const chainIdHex = await browserProvider.send("eth_chainId", []);
+      const currentChainId = parseInt(chainIdHex, 16);
+      
+      // Sepolia testnet chain ID
+      const SEPOLIA_CHAIN_ID = 11155111;
+      
+      // If not on Sepolia, prompt user to switch
+      if (currentChainId !== SEPOLIA_CHAIN_ID) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0xaa36a7' }], // Sepolia chain ID in hex
+          });
+          
+          toast({
+            title: "Switched to Sepolia",
+            description: "Connected to Sepolia Testnet for testing",
+          });
+        } catch (switchError: any) {
+          // This error code indicates that the chain has not been added to MetaMask
+          if (switchError.code === 4902) {
+            try {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0xaa36a7',
+                  chainName: 'Sepolia Testnet',
+                  nativeCurrency: {
+                    name: 'Sepolia ETH',
+                    symbol: 'SEP ETH',
+                    decimals: 18
+                  },
+                  rpcUrls: ['https://rpc.sepolia.org'],
+                  blockExplorerUrls: ['https://sepolia.etherscan.io']
+                }]
+              });
+            } catch (addError) {
+              console.error("Error adding Sepolia network:", addError);
+              toast({
+                title: "Network setup failed",
+                description: "Please add Sepolia testnet manually",
+                variant: "destructive",
+              });
+              setIsConnecting(false);
+              return;
+            }
+          } else {
+            console.error("Error switching to Sepolia:", switchError);
+            toast({
+              title: "Network switch failed",
+              description: "Please switch to Sepolia testnet manually",
+              variant: "destructive",
+            });
+            setIsConnecting(false);
+            return;
+          }
+        }
+      }
+
       const walletSigner = await browserProvider.getSigner();
 
       setProvider(browserProvider);
       setAccount(accounts[0]);
-      setChainId(parseInt(chainIdHex, 16));
+      setChainId(SEPOLIA_CHAIN_ID);
       setSigner(walletSigner);
       localStorage.setItem('walletConnected', 'true');
 
       toast({
         title: "Wallet connected",
-        description: `Connected to ${accounts[0].substring(0, 6)}...${accounts[0].substring(38)}`,
+        description: `Connected to Sepolia Testnet: ${accounts[0].substring(0, 6)}...${accounts[0].substring(38)}`,
       });
     } catch (error) {
       console.error("Error connecting wallet:", error);

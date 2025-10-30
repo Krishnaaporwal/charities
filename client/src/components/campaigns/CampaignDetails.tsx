@@ -41,29 +41,47 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({ campaignId }) => {
         throw new Error("Please connect your wallet to donate");
       }
       
-      // Call smart contract to donate
-      const contract = new CrowdfundingContract(signer);
-      const result = await contract.donateToCampaign(campaignId, amount);
+      let txHash = "";
+      let blockchainSuccess = false;
       
-      if (!result.success) {
-        throw new Error(result.error);
+      // Try to call smart contract to donate
+      try {
+        const contract = new CrowdfundingContract(signer);
+        const result = await contract.donateToCampaign(campaignId, amount);
+        
+        if (result.success && result.txHash) {
+          blockchainSuccess = true;
+          txHash = result.txHash;
+          console.log("✅ Blockchain donation successful:", result.txHash);
+        } else {
+          console.warn("⚠️ Blockchain donation failed, using demo mode:", result.error);
+        }
+      } catch (error: any) {
+        console.warn("⚠️ Blockchain error, using demo mode:", error.message);
       }
       
-      // Record donation in our API
+      // Record donation in our API (works in both blockchain and demo mode)
       const donationData = {
         campaignId,
         donorAddress: account,
         amount,
-        transactionHash: result.txHash!,
+        transactionHash: txHash || `demo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       };
       
       const response = await apiRequest('POST', '/api/donations', donationData);
-      return await response.json();
+      return { 
+        data: await response.json(), 
+        blockchainSuccess,
+        demoMode: !blockchainSuccess 
+      };
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
       toast({
-        title: "Donation Successful!",
-        description: `Thank you for your donation of ${donationAmount} ETH.`,
+        title: result.demoMode ? "Demo Donation Recorded!" : "Donation Successful!",
+        description: result.demoMode 
+          ? `Demo: Recorded ${donationAmount} SEP ETH donation. Enable blockchain for real transactions.`
+          : `Thank you for your donation of ${donationAmount} SEP ETH.`,
+        variant: result.demoMode ? "default" : "default",
       });
       queryClient.invalidateQueries({ queryKey: [`/api/campaigns/${campaignId}`] });
       queryClient.invalidateQueries({ queryKey: [`/api/campaigns/${campaignId}/donations`] });
@@ -190,11 +208,11 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({ campaignId }) => {
               <div>
                 <div className="flex justify-between text-sm mb-1">
                   <span>Raised</span>
-                  <span className="font-mono font-semibold">{parseFloat(campaign.raisedAmount).toFixed(2)} ETH</span>
+                  <span className="font-mono font-semibold">{parseFloat(campaign.raisedAmount).toFixed(4)} SEP ETH</span>
                 </div>
                 <div className="flex justify-between text-sm mb-2">
                   <span>Goal</span>
-                  <span className="font-mono font-semibold">{parseFloat(campaign.goalAmount).toFixed(2)} ETH</span>
+                  <span className="font-mono font-semibold">{parseFloat(campaign.goalAmount).toFixed(4)} SEP ETH</span>
                 </div>
                 <Progress value={progress} className="h-2" />
               </div>
@@ -226,13 +244,13 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({ campaignId }) => {
                         <DialogHeader>
                           <DialogTitle>Donate to {campaign.title}</DialogTitle>
                           <DialogDescription>
-                            Enter the amount of ETH you wish to donate. This transaction will be processed through your connected wallet.
+                            Enter the amount of SEP ETH (Sepolia testnet) you wish to donate. This transaction will be processed through your connected wallet.
                           </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                           <div className="space-y-2">
                             <label htmlFor="amount" className="text-sm font-medium">
-                              Donation Amount (ETH)
+                              Donation Amount (SEP ETH)
                             </label>
                             <Input
                               id="amount"
@@ -244,8 +262,8 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({ campaignId }) => {
                               onChange={(e) => setDonationAmount(e.target.value)}
                             />
                           </div>
-                          <div className="text-sm text-muted-foreground">
-                            You will be donating approximately ${(parseFloat(donationAmount || '0') * 2000).toFixed(2)} USD.
+                          <div className="text-sm text-muted-foreground bg-amber-500/10 border border-amber-500/30 rounded p-3">
+                            💡 This is testnet ETH with no real value. Get free SEP ETH from Sepolia faucets to test donations.
                           </div>
                         </div>
                         <DialogFooter>
@@ -267,13 +285,13 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({ campaignId }) => {
                 )}
                 <div className="text-center text-xs text-muted-foreground mt-4">
                   <a 
-                    href={`https://etherscan.io/address/${campaign.walletAddress}`} 
+                    href={`https://sepolia.etherscan.io/address/${campaign.walletAddress}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center justify-center hover:text-primary"
                   >
                     <ExternalLink className="h-3 w-3 mr-1" />
-                    View on Etherscan
+                    View on Sepolia Etherscan
                   </a>
                 </div>
               </div>
@@ -293,7 +311,7 @@ const CampaignDetails: React.FC<CampaignDetailsProps> = ({ campaignId }) => {
                     <div className="font-mono text-sm">{formatWalletAddress(donation.donorAddress)}</div>
                     <div className="text-xs text-muted-foreground">{new Date(donation.createdAt).toLocaleString()}</div>
                   </div>
-                  <div className="font-mono font-semibold">{parseFloat(donation.amount).toFixed(4)} ETH</div>
+                  <div className="font-mono font-semibold">{parseFloat(donation.amount).toFixed(4)} SEP ETH</div>
                 </CardContent>
               </Card>
             ))}

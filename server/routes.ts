@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertWaitlistSchema, insertCampaignSchema, insertDonationSchema } from "@shared/schema";
+import { insertWaitlistSchema, insertCampaignSchema, insertDonationSchema, insertNgoReportSchema, insertNgoMilestoneSchema } from "@shared/schema";
 import { ZodError } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { predictCampaignSuccess, detectFraudRisk, trainSuccessModel, trainFraudModel } from "./ml/pythonService";
@@ -227,6 +227,136 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: "Failed to train fraud model",
         message: error.message 
       });
+    }
+  });
+
+  // NGO Reports routes
+  app.get('/api/ngo-reports', async (req: Request, res: Response) => {
+    try {
+      const campaignId = req.query.campaignId ? parseInt(req.query.campaignId as string) : undefined;
+      
+      if (campaignId) {
+        const reports = await storage.getNgoReportsByCampaign(campaignId);
+        return res.json(reports);
+      }
+      
+      // Return all reports if no campaignId specified
+      res.json([]);
+    } catch (error) {
+      console.error('Error fetching NGO reports:', error);
+      res.status(500).json({ message: 'Failed to fetch NGO reports' });
+    }
+  });
+
+  app.get('/api/ngo-reports/:id', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: 'Invalid report ID' });
+      }
+      
+      const report = await storage.getNgoReport(id);
+      if (!report) {
+        return res.status(404).json({ message: 'Report not found' });
+      }
+      
+      res.json(report);
+    } catch (error) {
+      console.error('Error fetching NGO report:', error);
+      res.status(500).json({ message: 'Failed to fetch NGO report' });
+    }
+  });
+
+  app.post('/api/ngo-reports', async (req: Request, res: Response) => {
+    try {
+      const reportData = insertNgoReportSchema.parse(req.body);
+      
+      // Check if campaign exists
+      const campaign = await storage.getCampaign(reportData.campaignId);
+      if (!campaign) {
+        return res.status(404).json({ message: 'Campaign not found' });
+      }
+      
+      // Check if campaign is NGO type
+      if (campaign.creatorType !== 'ngo') {
+        return res.status(400).json({ message: 'Only NGO campaigns can add reports' });
+      }
+      
+      const report = await storage.createNgoReport(reportData);
+      res.status(201).json(report);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error('Error creating NGO report:', error);
+      res.status(500).json({ message: 'Failed to create NGO report' });
+    }
+  });
+
+  // NGO Milestones routes
+  app.get('/api/ngo-milestones', async (req: Request, res: Response) => {
+    try {
+      const campaignId = req.query.campaignId ? parseInt(req.query.campaignId as string) : undefined;
+      
+      if (campaignId) {
+        const milestones = await storage.getNgoMilestonesByCampaign(campaignId);
+        return res.json(milestones);
+      }
+      
+      // Return all milestones if no campaignId specified
+      res.json([]);
+    } catch (error) {
+      console.error('Error fetching NGO milestones:', error);
+      res.status(500).json({ message: 'Failed to fetch NGO milestones' });
+    }
+  });
+
+  app.get('/api/ngo-milestones/:id', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: 'Invalid milestone ID' });
+      }
+      
+      const milestone = await storage.getNgoMilestone(id);
+      if (!milestone) {
+        return res.status(404).json({ message: 'Milestone not found' });
+      }
+      
+      res.json(milestone);
+    } catch (error) {
+      console.error('Error fetching NGO milestone:', error);
+      res.status(500).json({ message: 'Failed to fetch NGO milestone' });
+    }
+  });
+
+  app.post('/api/ngo-milestones', async (req: Request, res: Response) => {
+    try {
+      const milestoneData = insertNgoMilestoneSchema.parse(req.body);
+      
+      // Check if campaign exists
+      const campaign = await storage.getCampaign(milestoneData.campaignId);
+      if (!campaign) {
+        return res.status(404).json({ message: 'Campaign not found' });
+      }
+      
+      // Check if campaign is NGO type
+      if (campaign.creatorType !== 'ngo') {
+        return res.status(400).json({ message: 'Only NGO campaigns can add milestones' });
+      }
+      
+      const milestone = await storage.createNgoMilestone(milestoneData);
+      res.status(201).json(milestone);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationError = fromZodError(error);
+        return res.status(400).json({ message: validationError.message });
+      }
+      
+      console.error('Error creating NGO milestone:', error);
+      res.status(500).json({ message: 'Failed to create NGO milestone' });
     }
   });
 

@@ -2,7 +2,9 @@ import {
   users, User, InsertUser, 
   campaigns, Campaign, InsertCampaign,
   donations, Donation, InsertDonation,
-  waitlist, Waitlist, InsertWaitlist
+  waitlist, Waitlist, InsertWaitlist,
+  ngoReports, NgoReport, InsertNgoReport,
+  ngoMilestones, NgoMilestone, InsertNgoMilestone
 } from "@shared/schema";
 
 export interface IStorage {
@@ -30,6 +32,18 @@ export interface IStorage {
   // Waitlist methods
   addToWaitlist(email: InsertWaitlist): Promise<Waitlist>;
   isEmailInWaitlist(email: string): Promise<boolean>;
+
+  // NGO Reports methods
+  getNgoReport(id: number): Promise<NgoReport | undefined>;
+  getNgoReportsByCampaign(campaignId: number): Promise<NgoReport[]>;
+  createNgoReport(report: InsertNgoReport): Promise<NgoReport>;
+  updateNgoReport(id: number, updates: Partial<NgoReport>): Promise<NgoReport | undefined>;
+
+  // NGO Milestones methods
+  getNgoMilestone(id: number): Promise<NgoMilestone | undefined>;
+  getNgoMilestonesByCampaign(campaignId: number): Promise<NgoMilestone[]>;
+  createNgoMilestone(milestone: InsertNgoMilestone): Promise<NgoMilestone>;
+  updateNgoMilestone(id: number, updates: Partial<NgoMilestone>): Promise<NgoMilestone | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -37,27 +51,35 @@ export class MemStorage implements IStorage {
   private campaigns: Map<number, Campaign>;
   private donations: Map<number, Donation>;
   private waitlistEmails: Map<number, Waitlist>;
+  private ngoReportsMap: Map<number, NgoReport>;
+  private ngoMilestonesMap: Map<number, NgoMilestone>;
   private userId: number;
   private campaignId: number;
   private donationId: number;
   private waitlistId: number;
+  private ngoReportId: number;
+  private ngoMilestoneId: number;
 
   constructor() {
     this.users = new Map();
     this.campaigns = new Map();
     this.donations = new Map();
     this.waitlistEmails = new Map();
+    this.ngoReportsMap = new Map();
+    this.ngoMilestonesMap = new Map();
     this.userId = 1;
     this.campaignId = 1;
     this.donationId = 1;
     this.waitlistId = 1;
+    this.ngoReportId = 1;
+    this.ngoMilestoneId = 1;
     
     // Add admin user
     this.users.set(1, {
       id: 1,
       username: 'admin',
       password: 'admin', // In production, this would be hashed
-      walletAddress: '0x1234567890abcdef',
+      walletAddress: '0xb667c9d90394ba62d57d387abcbe135b39dc93aa',
       email: 'admin@cryptofund.xyz',
       isAdmin: true,
       createdAt: new Date()
@@ -76,7 +98,7 @@ export class MemStorage implements IStorage {
         category: "ENERGY",
         goalAmount: "20",
         creatorId: 1,
-        walletAddress: "0x1234567890abcdef",
+        walletAddress: "0x8f45f2e7d77ba9271f77717e3a815b01fddbce24",
         deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       },
       {
@@ -86,7 +108,7 @@ export class MemStorage implements IStorage {
         category: "EDUCATION",
         goalAmount: "5",
         creatorId: 1,
-        walletAddress: "0x1234567890abcdef",
+        walletAddress: "0x1364d991f65d61452aeecd289c574391858966f0",
         deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
       },
       {
@@ -96,7 +118,7 @@ export class MemStorage implements IStorage {
         category: "HEALTHCARE",
         goalAmount: "15",
         creatorId: 1,
-        walletAddress: "0x1234567890abcdef",
+        walletAddress: "0xb667c9d90394ba62d57d387abcbe135b39dc93aa",
         deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000)
       }
     ];
@@ -239,6 +261,81 @@ export class MemStorage implements IStorage {
   async isEmailInWaitlist(email: string): Promise<boolean> {
     return Array.from(this.waitlistEmails.values())
       .some(entry => entry.email === email);
+  }
+
+  // NGO Reports methods
+  async getNgoReport(id: number): Promise<NgoReport | undefined> {
+    return this.ngoReportsMap.get(id);
+  }
+
+  async getNgoReportsByCampaign(campaignId: number): Promise<NgoReport[]> {
+    return Array.from(this.ngoReportsMap.values())
+      .filter(report => report.campaignId === campaignId);
+  }
+
+  async createNgoReport(report: InsertNgoReport): Promise<NgoReport> {
+    const id = this.ngoReportId++;
+    const newReport: NgoReport = {
+      ...report,
+      id,
+      reportData: report.reportData || null,
+      images: report.images || null,
+      documents: report.documents || null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.ngoReportsMap.set(id, newReport);
+    return newReport;
+  }
+
+  async updateNgoReport(id: number, updates: Partial<NgoReport>): Promise<NgoReport | undefined> {
+    const report = this.ngoReportsMap.get(id);
+    if (!report) return undefined;
+    
+    const updatedReport = {
+      ...report,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.ngoReportsMap.set(id, updatedReport);
+    return updatedReport;
+  }
+
+  // NGO Milestones methods
+  async getNgoMilestone(id: number): Promise<NgoMilestone | undefined> {
+    return this.ngoMilestonesMap.get(id);
+  }
+
+  async getNgoMilestonesByCampaign(campaignId: number): Promise<NgoMilestone[]> {
+    return Array.from(this.ngoMilestonesMap.values())
+      .filter(milestone => milestone.campaignId === campaignId);
+  }
+
+  async createNgoMilestone(milestone: InsertNgoMilestone): Promise<NgoMilestone> {
+    const id = this.ngoMilestoneId++;
+    const newMilestone: NgoMilestone = {
+      ...milestone,
+      id,
+      status: milestone.status || 'pending',
+      targetDate: milestone.targetDate || null,
+      completedDate: milestone.completedDate || null,
+      impactMetrics: milestone.impactMetrics || null,
+      createdAt: new Date()
+    };
+    this.ngoMilestonesMap.set(id, newMilestone);
+    return newMilestone;
+  }
+
+  async updateNgoMilestone(id: number, updates: Partial<NgoMilestone>): Promise<NgoMilestone | undefined> {
+    const milestone = this.ngoMilestonesMap.get(id);
+    if (!milestone) return undefined;
+    
+    const updatedMilestone = {
+      ...milestone,
+      ...updates
+    };
+    this.ngoMilestonesMap.set(id, updatedMilestone);
+    return updatedMilestone;
   }
 }
 

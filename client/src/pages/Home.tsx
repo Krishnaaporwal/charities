@@ -4,6 +4,7 @@ import FeaturedCampaigns from '@/components/home/FeaturedCampaigns';
 import HowItWorks from '@/components/home/HowItWorks';
 import WaitlistSection from '@/components/home/WaitlistSection';
 import FAQ from '@/components/home/FAQ';
+import NGOShowcase from '@/components/home/NGOShowcase';
 
 const Home: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const Home: React.FC = () => {
       <HowItWorks />
       <WaitlistSection />
       <FAQ />
+      <NGOShowcase />
     </div>
   );
 };

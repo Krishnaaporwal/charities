@@ -1,20 +1,24 @@
 import { ethers } from 'ethers';
+import { PLATFORM_FEE_ETH } from './web3';
 
 // Mock ABI for a crowdfunding contract
 // In a real application, this would be replaced with the actual ABI
 const CROWDFUNDING_ABI = [
-  "function createCampaign(string title, string description, uint256 goal, uint256 deadline) public returns (uint256)",
+  "function createCampaign(string title, string description, uint256 goal, uint256 deadline) public payable returns (uint256)",
   "function donateToCampaign(uint256 campaignId) public payable",
   "function getCampaign(uint256 campaignId) public view returns (address creator, string title, string description, uint256 goal, uint256 raised, uint256 deadline, bool completed)",
   "function withdrawFunds(uint256 campaignId) public",
   "function getCampaignCount() public view returns (uint256)",
+  "function getPlatformFee() public view returns (uint256)",
   "event CampaignCreated(uint256 indexed campaignId, address indexed creator)",
   "event DonationReceived(uint256 indexed campaignId, address indexed donor, uint256 amount)",
   "event CampaignCompleted(uint256 indexed campaignId)",
 ];
 
-// Sample contract address (this would be an actual deployed contract in production)
-const CROWDFUNDING_CONTRACT_ADDRESS = "0x1234567890123456789012345678901234567890";
+// Deployed contract address on Sepolia testnet
+// Contract deployed: October 31, 2025
+// View on Etherscan: https://sepolia.etherscan.io/address/0x5b19aE435CF4fA1DE595901380B7aA745C71afcb
+const CROWDFUNDING_CONTRACT_ADDRESS = "0x5b19aE435CF4fA1DE595901380B7aA745C71afcb";
 
 // Class to interact with the crowdfunding smart contract
 export class CrowdfundingContract {
@@ -47,7 +51,7 @@ export class CrowdfundingContract {
     description: string,
     goalAmount: string,
     deadline: Date
-  ): Promise<{ success: boolean; txHash?: string; error?: string }> {
+  ): Promise<{ success: boolean; txHash?: string; error?: string; platformFee?: string }> {
     try {
       if (!this.ensureContract()) {
         return { success: false, error: "Wallet not connected" };
@@ -59,12 +63,18 @@ export class CrowdfundingContract {
       // Convert deadline to Unix timestamp
       const deadlineTimestamp = Math.floor(deadline.getTime() / 1000);
       
-      // Call the smart contract
+      // Platform fee in wei (0.01 ETH)
+      const platformFeeInWei = ethers.parseEther(PLATFORM_FEE_ETH);
+      
+      // Call the smart contract with platform fee as value
       const tx = await this.contract!.createCampaign(
         title,
         description,
         goalInWei,
-        deadlineTimestamp
+        deadlineTimestamp,
+        {
+          value: platformFeeInWei // Send platform fee with transaction
+        }
       );
       
       // Wait for transaction to be mined
@@ -73,6 +83,7 @@ export class CrowdfundingContract {
       return {
         success: true,
         txHash: receipt.hash,
+        platformFee: PLATFORM_FEE_ETH,
       };
     } catch (error: any) {
       console.error("Error creating campaign:", error);

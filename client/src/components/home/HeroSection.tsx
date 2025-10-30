@@ -41,7 +41,7 @@ const HeroSection: React.FC = () => {
                 className="px-8 py-6 rounded-lg font-medium text-white crypto-gradient hover:opacity-90 transition-opacity shadow-lg shadow-primary/20"
                 size="lg"
               >
-                Start a Campaign
+                Start a Charity
               </Button>
               <Button 
                 onClick={handleExploreCampaigns}
@@ -49,7 +49,7 @@ const HeroSection: React.FC = () => {
                 className="px-8 py-6 rounded-lg font-medium"
                 size="lg"
               >
-                Explore Campaigns
+                Explore Charities
               </Button>
             </div>
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8">

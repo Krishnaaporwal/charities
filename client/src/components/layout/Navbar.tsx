@@ -30,9 +30,14 @@ const Navbar: React.FC = () => {
                   Explore
                 </a>
               </Link>
-              <Link href="/#how-it-works">
+              <Link href="/how-it-works">
                 <a className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium">
                   How It Works
+                </a>
+              </Link>
+              <Link href="/profile">
+                <a className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium">
+                  Profile
                 </a>
               </Link>
               <Link href="/tax-info">
@@ -40,13 +45,13 @@ const Navbar: React.FC = () => {
                   Tax & Donations
                 </a>
               </Link>
-              {/* Chat Link */}
+              {/* Chat Link
               <Link href="/CreativeDataSync">
                 <a className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium flex items-center gap-1">
                   <MessageSquareText className="h-4 w-4" />
                   Chat
                 </a>
-              </Link>
+              </Link> */}
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -78,9 +83,14 @@ const Navbar: React.FC = () => {
               Explore
             </a>
           </Link>
-          <Link href="/#how-it-works">
+          <Link href="/how-it-works">
             <a className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted">
               How It Works
+            </a>
+          </Link>
+          <Link href="/profile">
+            <a className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted">
+              Profile
             </a>
           </Link>
           <Link href="/#faq">
